@@ -1,0 +1,30 @@
+# Clone all repos for a user or organisation from GitHub
+
+function cloneall {
+    typeset NAME=${1:-x}
+    typeset CNTX=${2:-y}
+    typeset KEY=${3:-z}
+    typeset -i PAGE=1
+
+    if [[ ${NAME} == x ]] || [[ ${CNTX} == y ]]; then
+        print -u2 "usage: cloneall <user/org name> <{users|orgs}> [optional PAT file]"
+        return 1
+    else
+        if [[ ${KEY} == z ]]; then
+            curl "https://api.github.com/${CNTX}/${NAME}/repos?page=${PAGE}&per_page=100" \
+              | grep -e 'git_url*' \
+              | cut -d \" -f 4     \
+              | xargs -L1 git clone
+        elif [[ -r ${KEY} ]]; then
+            curl -H "Authorization: token $(<${KEY})" "https://api.github.com/${CNTX}/${NAME}/repos?type=private&page=${PAGE}&per_page=100" #\
+            #curl "https://api.github.com/${CNTX}/${NAME}/repos?access_token=${KEY}&page=${PAGE}&per_page=100" \
+              #| grep -e 'git_url*' \
+              #| cut -d \" -f 4     \
+              #| xargs -L1 git clone
+        else
+            print -u2 "ERROR: Unable to read personal access token ${KEY}"
+            return 1
+        fi
+    fi
+}
+

@@ -1,0 +1,24 @@
+# `cat` a Markdown-formatted file to STDOUT, preserving basic text formatting
+#
+function mdc {
+    for md_file in ${@}; do
+        if [[ -f ${md_file} ]]; then
+            if (( ${#@} > 1 )); then
+                for (( i = 1 ; i < COLUMNS ; ++i )); do
+                    printf '-'
+                done
+                printf "\n"
+            fi
+
+	        pandoc ${md_file} | lynx -stdin -dump
+
+            if (( ${#@} > 1 )); then
+                for (( i = 1 ; i < COLUMNS ; ++i )); do
+                    printf '-'
+                done
+                printf "\n"
+            fi
+        fi
+    done
+}
+

@@ -1,0 +1,3 @@
+# Open emacs window with desired geometry by default
+alias emacs='emacs -g 168x48+0+0'
+

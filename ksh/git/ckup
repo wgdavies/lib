@@ -1,0 +1,10 @@
+function ckup {
+    typeset name=${1:-$USER}
+    
+    for repo in *; do
+        if ! wr ${repo} 2>&1 | egrep -q "/${name}/|^NOTICE:"; then
+            print "Need to update ${repo}"
+        fi
+    done
+}
+

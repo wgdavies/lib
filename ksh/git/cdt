@@ -1,0 +1,10 @@
+# Function to change to the top-level of the current Git repo.
+#
+function cdt {
+	typeset -S GITDIR="$(git rev-parse --git-path . || return 1)"
+
+	if [[ ${GITDIR} =~ .git ]]; then
+		cd "${GITDIR/.git\/}"
+	fi
+}
+

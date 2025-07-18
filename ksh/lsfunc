@@ -1,0 +1,49 @@
+# lsfunc - list available (or all) functions
+# Part of the user-defined Korn Shell function library
+#
+# This function provides a default method for listing functions that are or
+# could be sourced from the ~/lib/ksh Korn Shell function library. It also
+# demonstrates a good minimal implementation for other such function library
+# files to follow; e.g argument processing (-h help message, specifically)
+# along with any other required arguments, self-contained function definition,
+# use of 'return' to switch back to the caller (rather than e.g 'exit' or
+# 'break'), few (if any) calls to external binaries, self-documented, &c.
+#
+function lsfunc {
+    typeset -i LISTALL=0 usercnt=0
+    typeset argc userfunc usercmd
+
+    while getopts -a lsfunc "ha" argc; do
+	case ${argc} in
+	    h) print "list available functions" && return ;;
+	    a) (( LISTALL = 1 )) ;;
+	esac
+    done
+
+    if [[ -d ~/lib/ksh ]]; then
+	if (( LISTALL == 0 )); then
+            for userfunc in ~/lib/ksh/*; do
+		if [[ -f ${userfunc} ]] && [[ ! ${userfunc} =~ README ]] \
+		       && [[ ! -d ${userfunc} ]] && [[ -L ${userfunc} ]]; then
+		    usercmd=${userfunc##*/}
+		    if type ${usercmd} 2>&1 > /dev/null; then
+                        (( usercnt++ ))
+			printf "%s: %s\n" "${usercmd}" "$(${usercmd} -h)"
+		    else
+		        print -u2 "WARNING: ${userfunc} available but not loaded"
+		    fi
+                fi
+	    done
+	else
+	    for userfunc in $(find ~/lib/ksh -type f -print); do
+                (( usercnt++ ))
+		printf "${userfunc} "
+		( source ${userfunc} && ${userfunc##*/} -h )
+	    done
+	fi
+    fi
+
+    if (( usercnt == 0 )); then
+        print -u2 "NOTICE: no user functions were found or loaded"
+    fi
+}

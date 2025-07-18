@@ -1,0 +1,3 @@
+# Set up diff for success on preferred terminal configuration
+alias diff='diff --width=132'
+

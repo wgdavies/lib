@@ -1,0 +1,4 @@
+# Wrapper for 'find' to search *.c and *.h files
+function findch {
+    find ${1} \( -name \*.c -o -name \*.h \) -exec grep -Hn "${2}" {} \;
+}

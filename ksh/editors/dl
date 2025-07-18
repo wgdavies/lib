@@ -1,0 +1,19 @@
+# Create and/or Open today's DMG log in nano
+function dl {
+    typeset _dl_pa=~/DMG/Invoices/DailyLog
+    typeset _dl_fn=$(printf '%(%Y%m%d)T' now).md
+    typeset _dl_ts=$(printf '%(%Y-%m-%d)T' now)
+
+    if [[ -d ${_dl_pa} ]]; then
+        cd ${_dl_pa}
+        if [[ ! -w ${_dl_fn} ]]; then
+            printf "# %s\n\n* X \n\n> Y hours TOTAL\n\n" ${_dl_ts} > ${_dl_fn}
+        fi
+
+        nano ${_dl_fn}
+    else
+        print -u2 "error: unable to write to directory path ${_dl_pa}"
+        return 1
+    fi
+}
+

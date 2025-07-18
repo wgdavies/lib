@@ -1,0 +1,9 @@
+#!/bin/ksh
+
+function concat {
+	for i in $@; do
+		printf "====> %s <====\n" "${i}"
+		cat ${i}
+	done
+}
+

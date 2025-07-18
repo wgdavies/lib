@@ -1,0 +1,19 @@
+function where {
+    typeset _where_string=${1}
+    typeset -a _where_lines
+
+    if [[ -z $2 ]]; then
+	print "usage: where <string> <file(s)>"
+    else
+	printf "Searching for occurrences of %s...\n" ${_where_string}
+	for filename in ${@:2}; do
+	    if [[ -r ${filename} ]]; then
+		_where_lines=( $(grep -n ${_where_string} ${filename} | cut -d: -f1) )
+		
+		printf "%s: %d lines; %s\n" ${filename} $(wc -l < ${filename}) "${_where_lines[*]}"
+	    else
+		printf "error: unable to read file: %s\n" ${filename}
+	    fi
+	done
+    fi
+}

@@ -1,0 +1,9 @@
+function md5ign
+{
+    typeset _md5ign_file _md5ign_sign
+    
+    for _md5ign_file in ${@}; do
+	_md5ign_sign=$(egrep -v '#.*' ${_md5ign_file} | LC_ALL=C sort -bdf | tr -d '[:space:]' | ${MD5})
+	printf "%s %s\n" "${_md5ign_sign}" "${_md5ign_file}"
+    done
+}

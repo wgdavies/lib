@@ -1,0 +1,4 @@
+# Print a short sum that should reliably distinguish unlike inputs.
+function ssum {                                         
+    md5 -r | sed -n 's/^\(...\).*\(...\)$/\1-\2/p'
+}

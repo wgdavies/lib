@@ -1,0 +1,14 @@
+function gitup {
+    typeset -a skip=( ${@} )
+
+	for dir in *; do
+		if [[ -d "${dir}" ]] && [[ ! ${skip[@]} =~ ${dir} ]]; then
+			cd "${dir}"
+			printf "%s: " "${dir}"
+			git pull && cd .. || break
+		else
+			print "Skipping ${dir}"
+		fi
+	done
+}
+

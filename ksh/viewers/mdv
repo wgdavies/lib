@@ -1,0 +1,6 @@
+# View a Markdown-formatted file in a terminal browser
+#
+function mdv {
+	pandoc ${1} | lynx -stdin 
+}
+

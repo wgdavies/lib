@@ -1,0 +1,13 @@
+function awslist
+{
+    typeset -a _aws_list=( $@ )
+    typeset -i _aws_idx=0
+    
+    if (( ${#_aws_list[@]} == 0 )) || [[ ${_aws_list[*]} =~ help ]]; then
+	print -u2 "usage: awslist <ApplicationName> <...>"
+    else
+	for (( _aws_idx = 0 ; _aws_idx < ${#_aws_list[@]} ; ++_aws_idx )); do
+	    aws deploy list-application-revisions --application-name ${_aws_list[$_aws_idx]} --sort-by registerTime --sort-order descending --max-items 1
+	done
+    fi
+}

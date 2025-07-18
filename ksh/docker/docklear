@@ -1,0 +1,13 @@
+# Clean slate Docker environment
+function docklear {
+    typeset img=${1}
+
+    docker rm $(docker ps -qa)
+    if (( ${#img} > 0 )); then
+        docker rmi ${img}
+    else
+        docker rmi $(docker images -q)
+        docker system prune -af
+    fi
+}
+

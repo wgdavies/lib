@@ -1,0 +1,31 @@
+# Function to show What Repo a Git repo (directory) points to for upstream
+function wr {
+    typeset -a _wr_all=( ${@} )
+    typeset -a _wr_list
+    typeset -i _wr_len=0
+    typeset _wr_dir
+
+    if [[ ${_wr_all[@]} =~ -h ]]; then
+        print "show What Repo a git repo/directory points to for upstream"
+        return
+    elif (( ${#_wr_all[@]} == 0 )); then
+	_wr_all=( "." )
+    fi
+
+    for _wr_dir in ${_wr_all[@]}; do
+	if [[ -d ${_wr_dir} ]]; then
+	    _wr_list+=( ${_wr_dir} )
+	    if (( ${#_wr_dir} > _wr_len )); then
+		(( _wr_len = ${#_wr_dir} ))
+	    fi
+	else
+	    print -u2 "wr error: no such directory ${_wr_dir}"
+	fi
+    done
+
+    for _wr_dir in ${_wr_list[@]}; do
+	printf "\n==== %-${_wr_len}s ====\n" ${_wr_dir}
+	( cd ${_wr_dir}; git remote -v 2>&1 | egrep -v '^(fatal|Stopping)' \
+              || print -u2 "NOTICE: not a Git repository" )
+    done
+}

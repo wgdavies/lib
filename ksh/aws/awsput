@@ -1,0 +1,17 @@
+function awsput
+{
+    typeset _aws_key=${1}
+    typeset _aws_app=${2}
+    typeset _aws_des=${3}
+    
+    if [[ -z ${_aws_key} ]] || [[ ${_aws_key} == *(-)h*(elp) ]] \
+	   || [[ -z ${_aws_app} ]] || [[ -z ${_aws_des} ]]; then
+	print -u2 "usage: awsput <key> <app> <des>"
+	print -u2 "       where"
+	print -u2 "       <key> is application.zip ID (to be created by aws command)"
+	print -u2 "       <app> is CD ApplicationName (from Console)"
+	print -u2 "       <des> is application_Version_String (matches directory name_version)"
+    else
+	aws deploy push --application-name ${_aws_app} --s3-location s3://cashnet-codedeploy/${_aws_key} --source ./${_aws_des} --description ${_aws_des}
+    fi
+}

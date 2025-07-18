@@ -1,0 +1,60 @@
+# Cross-compile Go binaries for various architectures or local (by default).
+#
+function xgo {
+	typeset goos=${1:-'-h'}
+	typeset goarch=${2:-''}
+	typeset -a oslist=(
+		android
+		darwin
+		mac
+		dragonfly
+		freebsd
+		linux
+		lnx
+		netbsd
+		openbsd
+		plan9
+		solaris
+		win
+		windows
+		)
+	typeset -a archlist=(
+		386
+		amd64
+		arm
+		arm64
+		mips64
+		mips64le
+		ppc64
+		ppc64le
+		)
+
+	if [[ -z ${goos} ]] || [[ ${goos} == -h ]]; then
+		print -u2 "usage: xgo <OS> <Arch>"
+		print -u2 "where:     <OS> <Arch>"
+
+		for (( i = 0 ; i < ${#oslist} ; i++ )); do
+			printf "%15s %s\n" "${oslist[$i]}" "${archlist[$i]}"
+		done
+
+		return 1
+	else
+		case ${goos} in
+			bsd) goos="freebsd" ;;
+			lnx) goos="linux" ;;
+			mac) goos="darwin" ;;
+			win) goos="windows" ;;
+		esac
+
+		if [[ ! ${oslist[@]} =~ ${goos} ]]; then
+			print -u2 "unknown Operating System ${goos}"
+			return 2
+		elif [[ -z ${goarch} ]] || [[ ! ${archlist[@]} =~ ${goarch} ]]; then
+			print -u2 "unknown Architecture ${goarch}"
+			return 2
+		fi
+
+		env GOOS=${goos} GOARCH=${goarch} go build -v
+	fi
+}
+

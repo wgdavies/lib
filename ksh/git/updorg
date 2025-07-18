@@ -1,0 +1,18 @@
+function updorg {
+    typeset ORIGIN=$(wr | grep fetch | awk '{print $2}')
+    typeset name=${1:-$USER}
+    typeset repo
+    
+    if [[ ${ORIGIN} =~ /jason/ ]]; then
+        repo=jason
+    elif [[ ${ORIGIN} =~ /calin/ ]]; then
+        repo=calin
+    else
+        print -u2 "error updating origin for ${ORIGIN}"
+    fi
+
+    git remote rename origin ${repo}
+    git remote add origin ${ORIGIN/\/${repo}\///${name}/}
+    git remote -v
+}
+

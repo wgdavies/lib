@@ -1,0 +1,14 @@
+## Unset environment variables from a local ./.env file.
+#
+function unenv {
+	if [[ -r ./.env ]]; then
+		for _shvar in $(egrep -v '^#' ./.env | awk -F= '{print $1}'); do
+			print "unset ${_shvar}"
+			unset ${_shvar}
+		done
+	else
+		print "ERROR: No ./.env file found."
+		return 1
+	fi
+}
+

@@ -1,0 +1,19 @@
+function sumdir
+{
+    typeset _owd="${PWD}" _dir="" _sum=""
+
+    for _dir in ${@}; do
+        if [[ -d ${_dir} ]]; then
+            ( command cd ${_dir}
+              _sum=$(find . -type f -not -path '*/\.git/*' -exec shasum {} \; \
+                | cut -d' ' -f1 | sort -n | shasum)
+              printf "%s %s\n" "${_sum:0:43}" "${_dir}"
+              cd ${owd}; )
+        else
+            print -u2 "sumdir error: directory ${_dir} not found"
+        fi
+    done
+}
+
+#              _sum=$(tar --warning=none --exclude-vcs --exclude-vcs-ignore \
+#                --create --file - . 2>/dev/null | shasum)

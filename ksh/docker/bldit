@@ -1,0 +1,11 @@
+# Docker build named image
+function bldit {
+    typeset img=${1}
+
+    if (( ${#img} > 0 )); then
+        docker build -t ${img} .
+    else
+        print -u2 "error: specify image name to build"
+    fi
+}
+

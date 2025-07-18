@@ -1,0 +1,15 @@
+function awsget
+{
+    typeset _aws_key=${1}
+    typeset _aws_ver=${2}
+    
+    if [[ -z ${_aws_key} ]] || [[ ${_aws_key} == *(-)h*(elp) ]] \
+	   || [[ -z ${_aws_ver} ]]; then
+	print -u2 "usage: awsget <key> <ver>"
+	print -u2 "       where"
+	print -u2 "       <key> is application.zip ID"
+	print -u2 "       <ver> is S3 versionId string"
+    else
+	aws s3api get-object --bucket cashnet-codedeploy --key ${_aws_key} --version-id ${_aws_ver} ./${_aws_key}
+    fi
+}

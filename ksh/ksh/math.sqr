@@ -1,0 +1,4 @@
+function .sh.math.sqr x
+{
+    (( .sh.value = (( x * x )) ))
+}

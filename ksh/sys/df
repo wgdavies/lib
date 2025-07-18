@@ -1,0 +1,3 @@
+# DWIM df
+alias df='df -h /System/Volumes/Data'
+

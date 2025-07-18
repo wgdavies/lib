@@ -1,0 +1,4 @@
+# Define the SYSROOT for building projects
+# This can/should be over-ridden at the command line when needed.
+export SYSROOT=~/DMC/buildroot/install
+

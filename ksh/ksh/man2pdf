@@ -1,0 +1,13 @@
+function man2pdf
+{
+    typeset -a _m2p_mans=( $@ )
+    typeset _m2p_manp
+
+    if (( ${#_m2p_mans[@]} > 0 )); then
+	for _m2p_manp in ${_m2p_mans[@]}; do
+	    man -t ${_m2p_manp} | ps2pdf - ${_m2p_manp}.pdf
+	done
+    else
+	print "specify one or more manpages for output to PDF"
+    fi
+}

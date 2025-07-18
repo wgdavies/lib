@@ -1,0 +1,3 @@
+function git_id {
+    printf 'blob %s\0' "$(wc -c "$1" | awk '{print $1;}')" | cat - "$1" | sha1sum | awk '{print $1}'
+}

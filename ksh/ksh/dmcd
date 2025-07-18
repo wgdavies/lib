@@ -1,0 +1,5 @@
+# Directory Massaging (ahem) Change Directory
+# Switches to parallel directory path
+#
+alias dmcd='if [[ ${PWD} =~ /DMC/ ]]; then cd ${PWD/DMC/DMC-local}; elif [[ ${PWD} =~ /DMC-local/ ]]; then cd ${PWD/-local}; else print "${PWD} not a DMC path"; fi'
+

@@ -1,0 +1,11 @@
+# Directory for user-defined Korn Shell functions
+#
+# Files in this directory (ONLY) will be sourced for inclusion/availability 
+# from the command line.  To enable a function, simply define it here.  To 
+# enable a pre-populated function from the library (c.f the sub-directories 
+# under this directory), copy or hard-link the desired function(s) to this 
+# directory, e.g: 
+#
+# ln git/w{r,b} .
+#
+# to enable the wr() and wb() user-defined Git functions.
