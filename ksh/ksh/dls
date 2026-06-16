@@ -1,0 +1,2 @@
+# View the most recent few downloads in ~/Downloads/.
+alias dls="ls -ltr ~/Downloads | tail"
