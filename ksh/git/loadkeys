@@ -1,0 +1,16 @@
+# Help the SSH key daemon find its stuff....
+#
+loadkeys() {
+    if [[ -d ~/.ssh/config.d ]]; then
+        for _key in $(sed -n 's/IdentityFile \(.*\)$/\1/p' ~/.ssh/config.d/* | egrep -v '^[[:space:]]*#' | sort | uniq); do
+            printf "Load key %s? [y/N] " ${_key/\~\/.ssh\/}
+            read _yn
+
+            case X${_yn} in
+                XY*|Xy*) ssh-add ${_key/#\~/$HOME} ;;
+                *)       print "skipped"           ;;
+            esac
+        done
+    fi
+}
+
