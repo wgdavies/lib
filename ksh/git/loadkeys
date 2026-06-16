@@ -1,16 +1,72 @@
 # Help the SSH key daemon find its stuff....
 #
 loadkeys() {
+    typeset -a _keys=()
+    typeset -i idx=0 jdx=0
+    typeset _key=""
+
     if [[ -d ~/.ssh/config.d ]]; then
         for _key in $(sed -n 's/IdentityFile \(.*\)$/\1/p' ~/.ssh/config.d/* | egrep -v '^[[:space:]]*#' | sort | uniq); do
-            printf "Load key %s? [y/N] " ${_key/\~\/.ssh\/}
-            read _yn
-
-            case X${_yn} in
-                XY*|Xy*) ssh-add ${_key/#\~/$HOME} ;;
-                *)       print "skipped"           ;;
-            esac
+            _keys+=( ${_key} )
         done
+    else
+        print -u2 "ERROR: Unable to read ~/.ssh/config.d directory."
+        return 1
     fi
+
+    printf "\t%3d: %s\n" 0 "Load all"
+    for (( idx = 0 ; idx < ${#_keys[@]} ; ++idx )); do
+        (( jdx = idx + 1 ))
+        _key="${_keys[$idx]}"
+        printf "\t%3d: %s\n" ${jdx} "${_key/\~\/.ssh\/}"
+    done
+
+    (( ++jdx ))
+    printf "\t%3d: %s\n" ${jdx} "Interactive list"
+    printf "\nSelect the desired key or option or 'q' to quit [ 0 - %d | q/Q ]: " ${jdx}
+    read _opt
+
+#printf "DEBUG> idx:%d jdx:%d #keys:%d\n" ${idx} ${jdx} ${#_keys[@]}
+    case X${_opt} in
+        X0)
+#printf "DEBUG> option %d selected\n" "${_opt}"
+            for _key in ${_keys[@]}; do
+                printf "Loading key: %s\n" "${_key/\~\/.ssh\/}"
+                ssh-add ${_key/#\~/$HOME}
+            done
+            ;;
+        X${jdx})
+#printf "DEBUG> option %d selected\n" "${_opt}"
+            for _key in ${_keys[@]}; do
+                printf "Load key %s? [y/N]: " ${_key/\~\/.ssh\/}
+                read _yn
+
+                case X${_yn} in
+                    XY*|Xy*) ssh-add ${_key/#\~/$HOME} ;;
+                    *)       print "skipped"           ;;
+                esac
+            done
+            ;;
+        X[1-9]*)
+#printf "DEBUG> option %d selected, keys=%s\n" "${_opt}" "${_keys[$_opt]}"
+            if (( _opt <= jdx )); then
+                (( idx = _opt - 1 ))
+                _key=${_keys[$idx]}
+                printf "Loading key: %s\n" "${_key/\~\/.ssh\/}"
+#printf "DEBUG> idx:%d jdx:%d keys:%s key:%s\n" ${idx} ${jdx} "${_keys[$idx]}" "${_key}"
+                ssh-add ${_key/#\~/$HOME}
+            else
+                print -u2 "ERROR: Selection out of bounds."
+                return 1
+            fi
+            ;;
+        Xq*|XQ*|X'')
+            return 0
+            ;;
+        X*)
+            print -u2 "ERROR: Unknown option; exiting."
+            return 1
+            ;;
+    esac
 }
 
