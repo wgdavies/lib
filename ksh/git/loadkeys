@@ -26,17 +26,14 @@ loadkeys() {
     printf "\nSelect the desired key or option or 'q' to quit [ 0 - %d | q/Q ]: " ${jdx}
     read _opt
 
-#printf "DEBUG> idx:%d jdx:%d #keys:%d\n" ${idx} ${jdx} ${#_keys[@]}
     case X${_opt} in
         X0)
-#printf "DEBUG> option %d selected\n" "${_opt}"
             for _key in ${_keys[@]}; do
                 printf "Loading key: %s\n" "${_key/\~\/.ssh\/}"
                 ssh-add ${_key/#\~/$HOME}
             done
             ;;
         X${jdx})
-#printf "DEBUG> option %d selected\n" "${_opt}"
             for _key in ${_keys[@]}; do
                 printf "Load key %s? [y/N]: " ${_key/\~\/.ssh\/}
                 read _yn
@@ -48,12 +45,10 @@ loadkeys() {
             done
             ;;
         X[1-9]*)
-#printf "DEBUG> option %d selected, keys=%s\n" "${_opt}" "${_keys[$_opt]}"
             if (( _opt <= jdx )); then
                 (( idx = _opt - 1 ))
                 _key=${_keys[$idx]}
                 printf "Loading key: %s\n" "${_key/\~\/.ssh\/}"
-#printf "DEBUG> idx:%d jdx:%d keys:%s key:%s\n" ${idx} ${jdx} "${_keys[$idx]}" "${_key}"
                 ssh-add ${_key/#\~/$HOME}
             else
                 print -u2 "ERROR: Selection out of bounds."
